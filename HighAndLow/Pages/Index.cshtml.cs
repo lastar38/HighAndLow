@@ -18,18 +18,33 @@ namespace HighAndLow.Pages
             _logger = logger;
         }
 
+        public bool HasNotStarted { get; set; } = true;
+        public bool HasEnded { get; set; } = false;
+
         public bool ParrentPlayer { get; set; } = false;
+
+        [TempData]
+        public Card PlayerNowCard { get; set; }
+
+        [TempData]
+        public Card EnemyNowCard { get; set; }
+
+        [TempData]
+        public List<Card> PlayerDeck { get; set; }
+
+        [TempData]
+        public List<Card> EnemyDeck { get; set; }
 
 
         public void OnGet()
         {
-            StartPlayer();
-            DealCards();
-            NextCardShow();
+            
         }
 
         public IActionResult OnPostGameStart()
         {
+            HasNotStarted = false;
+
             StartPlayer();
             DealCards();
             NextCardShow();
@@ -49,13 +64,39 @@ namespace HighAndLow.Pages
         // カードを配る
         private void DealCards()
         {
+            var Deck = new Cards();
+            PlayerDeck = new List<Card>();
+            EnemyDeck = new List<Card>();
+
+            var pop = ParrentPlayer;
+            foreach (var card in Deck)
+            {
+                if (pop)
+                {
+                    PlayerDeck.Add(card);
+                    pop = false;
+                }
+                else
+                {
+                    EnemyDeck.Add(card);
+                    pop = true;
+                }
+            }
+
+            if(PlayerDeck.Count() != EnemyDeck.Count())
+            {
+                //例外処理
+            }
 
         }
 
         // 次のカードを配る
         private void NextCardShow()
         {
-
+            PlayerNowCard = PlayerDeck.First();
+            PlayerDeck.RemoveAt(0);
+            EnemyNowCard = EnemyDeck.First();
+            EnemyDeck.RemoveAt(0);
         }
     }
 }

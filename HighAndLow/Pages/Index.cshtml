@@ -1,10 +1,68 @@
-﻿@page
+﻿@page "{handler?}"
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1>ハイ＆ロー</h1>
+
+    @{
+        if (Model.HasNotStarted)
+        {
+            @*ゲーム開始前の表示*@
+            <form method="post">
+                <div class="row w-100 mt-3 mb-5 justify-content-center">
+                    <input asp-page-handler="GameStart" class="btn btn-primary col-sm-2" type="submit" value="ゲーム開始" />
+                </div>
+            </form>
+            return;
+        }
+        else if (Model.HasEnded)
+        {
+            @*ゲーム終了時の表示*@
+            <div class="container-fluid mb-4">
+                @*<span class="col">@Model.ResultMessage</span>*@
+            </div>
+            return;
+        }
+    }
+
+    <div class="container-fluid mb-4">
+        @*ゲーム中の表示*@
+        <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col-6 d-flex flex-column" id="PlayerCard">
+                <span>あなた</span>
+                @{  if (Model.ParrentPlayer)
+                    {
+                        @Model.PlayerNowCard.CardImage.FrontImageToHtml();
+                    }
+                    else
+                    {
+                        @Model.PlayerNowCard.CardImage.BackImageToHtml();
+                    }
+                }
+            </div>
+            <div class="col-6 d-flex flex-column" id="CpuCard">
+                <span>相手</span>
+                @{ 
+                    if (!Model.ParrentPlayer)
+                    {
+                        @Model.EnemyNowCard.CardImage.FrontImageToHtml();
+                    }
+                    else
+                    {
+                        @Model.EnemyNowCard.CardImage.BackImageToHtml();
+                    }
+                }
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <form method="post">
+        @*ゲーム中の入力項目表示*@
+    </form>
+
 </div>
