@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace HighAndLow.Pages
 {
@@ -16,6 +17,9 @@ namespace HighAndLow.Pages
         {
             _logger = logger;
         }
+
+        public bool ParrentPlayer { get; set; } = false;
+
 
         public void OnGet()
         {
@@ -36,7 +40,10 @@ namespace HighAndLow.Pages
         // 最初の親を決める
         private void StartPlayer()
         {
-
+            if(RandomNumberGenerator.GetInt32(0, 2) == 1)
+            {
+                ParrentPlayer = true;
+            }
         }
 
         // カードを配る
