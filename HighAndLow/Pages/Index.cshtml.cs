@@ -19,6 +19,35 @@ namespace HighAndLow.Pages
 
         public void OnGet()
         {
+            StartPlayer();
+            DealCards();
+            NextCardShow();
+        }
+
+        public IActionResult OnPostGameStart()
+        {
+            StartPlayer();
+            DealCards();
+            NextCardShow();
+
+            return Page();
+        }
+
+        // 最初の親を決める
+        private void StartPlayer()
+        {
+
+        }
+
+        // カードを配る
+        private void DealCards()
+        {
+
+        }
+
+        // 次のカードを配る
+        private void NextCardShow()
+        {
 
         }
     }
