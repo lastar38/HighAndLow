@@ -35,12 +35,16 @@ namespace HighAndLow.Pages
         [TempData]
         public List<Card> EnemyDeck { get; set; }
 
+        public string JudgedResult { get; set; }
+
+        public string EnemyDeclaration { get; set; }
 
         public void OnGet()
         {
-            
+
         }
 
+        // ゲーム開始
         public IActionResult OnPostGameStart()
         {
             HasNotStarted = false;
@@ -52,10 +56,17 @@ namespace HighAndLow.Pages
             return Page();
         }
 
+        // 次のターンへ
+        public IActionResult OnPostNextTurn()
+        {
+
+            return Page();
+        }
+
         // 最初の親を決める
         private void StartPlayer()
         {
-            if(RandomNumberGenerator.GetInt32(0, 2) == 1)
+            if (RandomNumberGenerator.GetInt32(0, 2) == 1)
             {
                 ParrentPlayer = true;
             }
@@ -83,20 +94,41 @@ namespace HighAndLow.Pages
                 }
             }
 
-            if(PlayerDeck.Count() != EnemyDeck.Count())
+            if (PlayerDeck.Count() != EnemyDeck.Count())
             {
                 //例外処理
             }
-
         }
 
         // 次のカードを配る
         private void NextCardShow()
         {
-            PlayerNowCard = PlayerDeck.First();
-            PlayerDeck.RemoveAt(0);
-            EnemyNowCard = EnemyDeck.First();
-            EnemyDeck.RemoveAt(0);
+            if (PlayerDeck.Count() <= 0)
+            {
+                HasEnded = true;
+            }
+            else
+            {
+                PlayerNowCard = PlayerDeck.First();
+                PlayerDeck.RemoveAt(0);
+                EnemyNowCard = EnemyDeck.First();
+                EnemyDeck.RemoveAt(0);
+            }
+        }
+
+        private void JudgmentShow()
+        {
+
+        }
+
+        private void PlayerJudgment()
+        {
+
+        }
+
+        private void EnemyJudgment()
+        {
+
         }
     }
 }
