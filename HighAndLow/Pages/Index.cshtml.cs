@@ -18,9 +18,14 @@ namespace HighAndLow.Pages
             _logger = logger;
         }
 
+        [TempData]
         public bool HasNotStarted { get; set; } = true;
         public bool HasEnded { get; set; } = false;
 
+        [TempData]
+        public bool ShowResult { get; set; } = false;
+
+        [TempData]
         public bool ParrentPlayer { get; set; } = false;
 
         [TempData]
@@ -35,13 +40,29 @@ namespace HighAndLow.Pages
         [TempData]
         public List<Card> EnemyDeck { get; set; }
 
+        [TempData]
+        public int PlayerVictry { get; set; } = 0;
+
+        [TempData]
+        public int EnemyVictry { get; set; } = 0;
+
+        [TempData]
         public string JudgedResult { get; set; }
 
+        [BindProperty]
+        public HighLow HighOrLow { get; set; }
+        public enum HighLow
+        {
+            High,
+            Low,
+        }
+
+        [TempData]
         public string EnemyDeclaration { get; set; }
 
         public void OnGet()
         {
-
+            HasNotStarted = true;
         }
 
         // ゲーム開始
@@ -53,13 +74,35 @@ namespace HighAndLow.Pages
             DealCards();
             NextCardShow();
 
+            if (!ParrentPlayer)
+            {
+                EnemyJudgment();
+            }
+
             return Page();
         }
 
         // 次のターンへ
         public IActionResult OnPostNextTurn()
         {
-
+            if (!ShowResult)
+            {
+                ShowResult = !ShowResult;
+                if (!ParrentPlayer)
+                {
+                    PlayerJudgment();
+                }
+            }
+            else
+            {
+                ShowResult = !ShowResult;
+                ParrentPlayer = !ParrentPlayer;
+                NextCardShow();
+                if (ParrentPlayer)
+                {
+                    EnemyJudgment();
+                }                
+            }
             return Page();
         }
 
@@ -123,12 +166,101 @@ namespace HighAndLow.Pages
 
         private void PlayerJudgment()
         {
-
+            if (HighOrLow == HighLow.High)
+            {
+                if (PlayerNowCard.Number > EnemyNowCard.Number)
+                {
+                    JudgedResult = "当たり";
+                    PlayerVictry += 2;
+                }
+                else if (PlayerNowCard.Number < EnemyNowCard.Number)
+                {
+                    JudgedResult = "はずれ";
+                    EnemyVictry += 2;
+                }
+                else
+                {
+                    JudgedResult = "引き分け";
+                    PlayerVictry++;
+                    EnemyVictry++;
+                }
+            }
+            else
+            {
+                if (PlayerNowCard.Number < EnemyNowCard.Number)
+                {
+                    JudgedResult = "当たり";
+                    PlayerVictry += 2;
+                }
+                else if (PlayerNowCard.Number > EnemyNowCard.Number)
+                {
+                    JudgedResult = "はずれ";
+                    EnemyVictry += 2;
+                }
+                else
+                {
+                    JudgedResult = "引き分け";
+                    PlayerVictry++;
+                    EnemyVictry++;
+                }
+            }
         }
 
         private void EnemyJudgment()
         {
+            if (EnemyAI())
+            {
+                // 相手がハイを選択
+                EnemyDeclaration = "ハイ";
 
+                if (PlayerNowCard.Number < EnemyNowCard.Number)
+                {
+                    JudgedResult = "当たり";
+                    PlayerVictry += 2;
+                }
+                else if (PlayerNowCard.Number > EnemyNowCard.Number)
+                {
+                    JudgedResult = "はずれ";
+                    EnemyVictry += 2;
+                }
+                else
+                {
+                    JudgedResult = "引き分け";
+                    PlayerVictry++;
+                    EnemyVictry++;
+                }
+            }
+            else
+            {
+                // 相手がローを選択
+                EnemyDeclaration = "ロー";
+
+                if (PlayerNowCard.Number > EnemyNowCard.Number)
+                {
+                    JudgedResult = "当たり";
+                    PlayerVictry += 2;
+                }
+                else if (PlayerNowCard.Number < EnemyNowCard.Number)
+                {
+                    JudgedResult = "はずれ";
+                    EnemyVictry += 2;
+                }
+                else
+                {
+                    JudgedResult = "引き分け";
+                    PlayerVictry++;
+                    EnemyVictry++;
+                }
+            }
+        }
+
+        public bool EnemyAI()
+        {
+            if(PlayerNowCard.Number >= 7)
+            {
+                return false;
+            }
+            else { return true; }
         }
     }
 }

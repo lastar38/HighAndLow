@@ -40,32 +40,99 @@
                         }
                         else
                         {
-                            @Model.PlayerNowCard.CardImage.BackImageToHtml();
+                            if (Model.ShowResult)
+                            {
+                                @Model.PlayerNowCard.CardImage.FrontImageToHtml();
+                            }
+                            else
+                            {
+                                @Model.PlayerNowCard.CardImage.BackImageToHtml();
+                            }
                         }
                     }
                 </div>
                 <div class="col-6 d-flex flex-column" id="CpuCard">
                     <span>相手</span>
                     @{
+                        string hiddenAttribute = string.Empty;
                         if (!Model.ParrentPlayer)
                         {
                             @Model.EnemyNowCard.CardImage.FrontImageToHtml();
+                            hiddenAttribute = "hidden=\"hidden\"";
                         }
                         else
                         {
-                            @Model.EnemyNowCard.CardImage.BackImageToHtml();
+                            if (Model.ShowResult)
+                            {
+                                @Model.EnemyNowCard.CardImage.FrontImageToHtml();
+                            }
+                            else
+                            {
+                                @Model.EnemyNowCard.CardImage.BackImageToHtml();
+                            }
                         }
                     }
+                    <div @hiddenAttribute>
+                        @{
+                            if (Model.EnemyAI())
+                            {
+                                <label asp-for="EnemyDeclaration" class="col-form-label col-sm-2 offset-sm-3 justify-content-end">ハイ</label>
+                            }
+                            else
+                            {
+                                <label asp-for="EnemyDeclaration" class="col-form-label col-sm-2 offset-sm-3 justify-content-end">ロー</label>
+                            }
+                        }
+                    </div>
                 </div>
+                @if (Model.ShowResult)
+                {
+                    <div class="form-row w-100">
+                        @{
+                            if (Model.JudgedResult == "当たり")
+                            {
+                                <label asp-for="JudgedResult" class="col-form-label col-12 justify-content-center">当たり</label>
+                            }
+                            else if (Model.JudgedResult == "はずれ")
+                            {
+                                <label asp-for="JudgedResult" class="col-form-label col-12 justify-content-center">はずれ</label>
+                            }
+                            else
+                            {
+                                <label asp-for="JudgedResult" class="col-form-label col-12 justify-content-center">引き分け</label>
+                            }
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>
 
     <form method="post">
         @*ゲーム中の入力項目表示*@
-        @{ if (Model.ParrentPlayer)
+        @{ if (!Model.ParrentPlayer)
             {
-                // ラジオボタンを表示
+                if (!Model.ShowResult)
+                {
+                    <div class="form-group w-100 justify-content-center">
+                        <div class="form-row w-100">
+                            <label asp-for="HighOrLow" class="col-form-label col-12 justify-content-center">ハイかローを選択してください。</label>
+                        </div>
+                        <div class="form-check form-check-inline justify-content-center mb-2">
+                            <div class="mx-3">
+                                <input class="form-check-input" asp-for="HighOrLow" type="radio" value=0 id="radioHigh" required />
+                                <label class="form-check-label" for="radioHigh">ハイ</label>
+                            </div>
+                            <div>
+                                <input class="form-check-input" asp-for="HighOrLow" type="radio" value=1 id="radioLow" required />
+                                <label class="form-check-label" for="radioLow">ロー</label>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="row w-100 mt-3 mb-5 justify-content-center">
+                    <input asp-page-handler="NextTurn" class="btn btn-primary col-sm-2" type="submit" value="次へ" />
+                </div>
             }
             else
             {
