@@ -22,7 +22,9 @@
         {
             @*ゲーム終了時の表示*@
             <div class="container-fluid mb-4">
-                @*<span class="col">@Model.ResultMessage</span>*@
+                <span class="col">@Model.ResultMessage</span>
+                <span>あなた　@Model.PlayerVictry</span>
+                <span>相手　@Model.EnemyVictry</span>
             </div>
             return;
         }
@@ -50,6 +52,7 @@
                             }
                         }
                     }
+                    @*<span>あなた　@Model.PlayerVictry</span>*@
                 </div>
                 <div class="col-6 d-flex flex-column" id="CpuCard">
                     <span>相手</span>
@@ -84,6 +87,7 @@
                             }
                         }
                     </div>
+                    @*<span>相手　@Model.EnemyVictry</span>*@
                 </div>
                 @if (Model.ShowResult)
                 {

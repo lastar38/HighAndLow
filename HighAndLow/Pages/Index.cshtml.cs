@@ -20,6 +20,7 @@ namespace HighAndLow.Pages
 
         [TempData]
         public bool HasNotStarted { get; set; } = true;
+        [TempData]
         public bool HasEnded { get; set; } = false;
 
         [TempData]
@@ -60,6 +61,9 @@ namespace HighAndLow.Pages
         [TempData]
         public string EnemyDeclaration { get; set; }
 
+        [TempData]
+        public string ResultMessage { get; set; }
+
         public void OnGet()
         {
             HasNotStarted = true;
@@ -74,7 +78,7 @@ namespace HighAndLow.Pages
             DealCards();
             NextCardShow();
 
-            if (!ParrentPlayer)
+            if (ParrentPlayer)
             {
                 EnemyJudgment();
             }
@@ -149,6 +153,19 @@ namespace HighAndLow.Pages
             if (PlayerDeck.Count() <= 0)
             {
                 HasEnded = true;
+
+                if (PlayerVictry > EnemyVictry)
+                {
+                    ResultMessage = "勝利";
+                }
+                else if (PlayerVictry < EnemyVictry)
+                {
+                    ResultMessage = "敗北";
+                }
+                else
+                {
+                    ResultMessage = "引き分け";
+                }
             }
             else
             {
@@ -216,12 +233,12 @@ namespace HighAndLow.Pages
                 if (PlayerNowCard.Number < EnemyNowCard.Number)
                 {
                     JudgedResult = "当たり";
-                    PlayerVictry += 2;
+                    EnemyVictry += 2;
                 }
                 else if (PlayerNowCard.Number > EnemyNowCard.Number)
                 {
                     JudgedResult = "はずれ";
-                    EnemyVictry += 2;
+                    PlayerVictry += 2;
                 }
                 else
                 {
@@ -238,12 +255,12 @@ namespace HighAndLow.Pages
                 if (PlayerNowCard.Number > EnemyNowCard.Number)
                 {
                     JudgedResult = "当たり";
-                    PlayerVictry += 2;
+                    EnemyVictry += 2;
                 }
                 else if (PlayerNowCard.Number < EnemyNowCard.Number)
                 {
                     JudgedResult = "はずれ";
-                    EnemyVictry += 2;
+                    PlayerVictry += 2;
                 }
                 else
                 {
